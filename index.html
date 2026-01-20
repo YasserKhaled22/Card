@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>3D Profile Card</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --accent:#8a5cff;
+  --accent-soft:rgba(138,92,255,.35);
+  --glow:rgba(138,92,255,.7);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui,sans-serif;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:radial-gradient(circle at top,#1a1a2e,#050508);
+  overflow:hidden;
+  transition:background 0.0s;
+}
+
+/* CARD */
+.card{
+  width:320px;
+  padding:28px;
+  border-radius:24px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--accent-soft);
+  box-shadow:0 0 50px var(--glow);
+  text-align:center;
+  transition:transform .15s ease;
+  position:relative;
+}
+
+/* AVATAR */
+.avatar-wrap{
+  position:relative;
+  width:120px;
+  height:120px;
+  margin:auto;
+}
+
+.avatar{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:url("https://i.ibb.co/Y4ft0pmD/7878.jpg") center/cover;
+  border:3px solid var(--accent);
+  box-shadow:
+    0 0 20px var(--accent),
+    0 0 45px var(--glow);
+  position:relative;
+  z-index:2;
+}
+
+/* SNOWY PARTICLES */
+.snow{
+  position:absolute;
+  inset:-25px;
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.snow span{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:white;
+  opacity:.8;
+  animation:float 3s linear infinite;
+  box-shadow:0 0 5px var(--accent);
+}
+
+@keyframes float{
+  from{transform:translateY(0) scale(.8);}
+  to{transform:translateY(-60px) scale(1.2);}
+}
+
+/* TEXT */
+h2{
+  color: #ffffff;
+  margin:18px 0 6px;
+  letter-spacing:2px;
+}
+
+p{
+  color: #ffffff;
+  font-size:14px;
+  opacity:.7;
+}
+
+/* BUTTONS */
+.links{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.links a{
+  text-decoration:none;
+  padding:12px;
+  border-radius:30px;
+  color:white;
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--accent-soft);
+  transition:.3s;
+}
+
+.links a:hover{
+  background:var(--accent-soft);
+}
+
+/* COLOR BUTTON */
+.theme-btn{
+  position:fixed;
+  left:20px;
+  bottom:20px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(10px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  cursor:pointer;
+}
+
+/* PANEL */
+.panel{
+  position:fixed;
+  left:20px;
+  bottom:90px;
+  background:rgba(20,20,20,.9);
+  padding:12px;
+  border-radius:18px;
+  display:none;
+}
+
+.colors{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.colors div{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+  <div class="avatar-wrap">
+    <div class="snow" id="snow"></div>
+    <div class="avatar"></div>
+  </div>
+
+  <h2>ADMIN</h2>
+  <p>Admiiniistrator 1539074384</p>
+
+  <div class="links">
+    <a href="#">Facebook</a>
+    <a href="#">GitHub</a>
+    <a href="#">Forum</a>
+  </div>
+</div>
+
+<div class="theme-btn" onclick="toggle()">🎨</div>
+
+<div class="panel" id="panel">
+  <div class="colors">
+    <div style="background:#8a5cff" onclick="setTheme('#8a5cff')"></div>
+    <div style="background:#ff4d6d" onclick="setTheme('#ff4d6d')"></div>
+    <div style="background:#00c2ff" onclick="setTheme('#00c2ff')"></div>
+    <div style="background:#38ef7d" onclick="setTheme('#38ef7d')"></div>
+    <div style="background:#f5af19" onclick="setTheme('#f5af19')"></div>
+    <div style="background:#ffffff" onclick="setTheme('#ffffff')"></div>
+  </div>
+</div>
+
+<script>
+/* 3D MOVE */
+const card=document.getElementById("card");
+document.addEventListener("mousemove",e=>{
+  const x=(window.innerWidth/2-e.pageX)/20;
+  const y=(window.innerHeight/2-e.pageY)/20;
+  card.style.transform=`rotateY(${x}deg) rotateX(${y}deg)`;
+});
+
+/* SNOW */
+const snow=document.getElementById("snow");
+for(let i=0;i<14;i++){
+  let s=document.createElement("span");
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.animationDelay=Math.random()*6+"s";
+  snow.appendChild(s);
+}
+
+/* THEME */
+function setTheme(color){
+  document.documentElement.style.setProperty("--accent",color);
+  document.documentElement.style.setProperty("--accent-soft",color+"55");
+  document.documentElement.style.setProperty("--glow",color+"aa");
+
+  document.body.style.background=
+    "radial-gradient(circle at top,"+color+"100,#050508)";
+}
+
+function toggle(){
+  const p=document.getElementById("panel");
+  p.style.display=p.style.display==="block"?"none":"block";
+}
+</script>
+
+</body>
+</html>
